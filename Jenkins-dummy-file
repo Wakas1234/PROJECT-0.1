@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Copy Dummy File') {
+            steps {
+                script {
+                    // Define source and destination directories
+                    def sourceDir = "${env.WORKSPACE}"
+                    def destinationDir = "/path/to/destination/directory"
+
+                    // Check if the dummy file exists in the source directory
+                    def dummyFile = new File("${sourceDir}/dummy.txt")
+                    if (dummyFile.exists()) {
+                        // Copy the file to the destination directory
+                        sh "cp ${sourceDir}/dummy.txt ${destinationDir}/dummy.txt"
+                        echo "Dummy file copied successfully."
+                    } else {
+                        error "The dummy file does not exist in the Jenkins workspace."
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up the workspace after copying (optional)
+            cleanWs()
+        }
+    }
+}
